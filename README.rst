@@ -1,5 +1,5 @@
-pydvis
-======
+dvis
+====
 
 customized matplotlib extensions
 
