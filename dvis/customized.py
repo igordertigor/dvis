@@ -7,7 +7,7 @@ from matplotlib.ticker import FormatStrFormatter
 
 import dvis.color
 
-__all__ = ["Scatter","Boxplot"]
+__all__ = ["Scatter","Boxplot","Errorline"]
 
 def Scatter ( x, y, ax=None, **kwargs ):
     """Creates a Tufte scatter plot
@@ -111,8 +111,8 @@ def Errorline ( x, y, e=None, se=None, ax=None, **kwargs ):
         are passed to pylab.plot and to pylab.fill
     """
     c = dvis.color.colorsequence ( kwargs.setdefault ( 'color', [0,0,0]))[0]
-    kwargs.setdefault ( 'edgecolor', dvis.color.cmix ( c, 1, 3 ) )
-    kwargs.setdefault ( 'facecolor', dvis.color.cmix ( c, 1, 1.5 ) )
+    kwargs.setdefault ( 'edgecolor', dvis.color.cmix ( c, 'w', 3 ) )
+    kwargs.setdefault ( 'facecolor', dvis.color.cmix ( c, 'w', 1.5 ) )
     if se is None:
         se = lambda x: (pl.mean(x)-pl.std(x)/pl.sqrt(len(x)),pl.mean(x)+pl.std(x)/pl.sqrt(len(x)))
     if ax is None:
