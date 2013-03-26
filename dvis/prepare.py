@@ -142,7 +142,7 @@ def axes_grid ( naxes, **kwargs ):
     ax.shape = naxes
     for i in xrange ( naxes[0] ):
         for j in xrange ( naxes[1] ):
-            print nx[i,j],ny[i,j]
+            # print nx[i,j],ny[i,j]
             ax[i,j].set_axes_locator(
                     divider.new_locator(nx=nx[i,j],nx1=nx1[i,j],
                         ny=ny[i,j],ny1=ny1[i,j])
