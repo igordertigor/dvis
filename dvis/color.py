@@ -71,13 +71,8 @@ def colorsequence ( c ):
 
 
 def __mkcolorlist ( c ):
-    if isinstance ( c, list ):
-        out = c
-    elif getattr ( c, '__iter__', False ):
-        out = list ( c )
-    elif isinstance ( c, (float,int) ):
-        out = [float(c)]*3
-
-    assert len(out) == 3, "colors should have length 3"
-
-    return out
+    if matplotlib.colors.is_color_like ( c ):
+        return list(matplotlib.colors.colorConverter.to_rgb(c))
+    else:
+        print c
+        raise ValueError, "c cannot be converted to a color"
