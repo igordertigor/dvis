@@ -30,7 +30,7 @@ def prepare_axes ( ax, haveon=('b','l'), out=10 ):
         the prepared axes object
     """
     if getattr(ax, '__iter__', False ):
-        return [prepare_axes ( ax_ ) for ax_ in ax]
+        return [prepare_axes ( ax_, haveon ) for ax_ in ax]
     # Complete haveon
     splon = []
     for loc in haveon:
