@@ -31,7 +31,7 @@ def Scatter ( x, y, ax=None, **kwargs ):
     ax.get_yaxis().set_major_formatter ( FormatStrFormatter ( "%.3f" ) )
     return S
 
-def Boxplot ( x, ax=None, **kwargs ):
+def Boxplot ( x, ax=None, offset=0.005, **kwargs ):
     """Creates a Tufte boxplot
 
     :Parameters:
@@ -39,6 +39,8 @@ def Boxplot ( x, ax=None, **kwargs ):
             values to be summarized
         *ax*
             target axes
+        *offset*
+            offset to mark central part and median gap
 
     :Optional keyword arguments:
         See pylab.boxplot
@@ -86,6 +88,7 @@ def Boxplot ( x, ax=None, **kwargs ):
         ax.add_artist (
                 BoxplotArtist ( pos,
                     calculate_boxplot_stats ( d, **kwargs ),
+                    offset,
                     **kwargs ) )
 
 def Errorline ( x, y, e=None, se=None, ax=None, **kwargs ):
@@ -224,14 +227,15 @@ def calculate_boxplot_stats ( x, **kwargs ):
             'notch':(notch_min,notch_max)}
 
 class BoxplotArtist ( Artist ):
-    def __init__ ( self, x, boxstats, **kwargs ):
+    def __init__ ( self, x, boxstats, offset, **kwargs ):
         Artist.__init__ ( self )
         self.x = x
         self.boxstats = boxstats
         self.notch = kwargs.setdefault ( 'notch', 0 )
         self.vert = kwargs.setdefault ( 'vert', 0 )
         self.color = kwargs.setdefault ( 'color', [0,0,0] )
-        print self.color
+        self.offset = offset
+        self.lw    = kwargs.setdefault ( 'linewidth', 1 )
 
     def draw ( self, renderer, *args, **kwargs ):
         if not self.get_visible(): return
@@ -245,8 +249,8 @@ class BoxplotArtist ( Artist ):
         x = self.x
         rx = self.axes.get_xlim()
         ry = self.axes.get_ylim()
-        ex = .005*(rx[1]-rx[0])
-        ey = .005*(ry[1]-ry[0])
+        ex = self.offset*(rx[1]-rx[0])
+        ey = self.offset*(ry[1]-ry[0])
         if self.vert == 1:
             ex,ey = ey,ex
         p = self.boxstats['main']
@@ -268,9 +272,9 @@ class BoxplotArtist ( Artist ):
         if self.vert==1:
             lines = pl.array([ pl.c_[l[:,1],l[:,0]] for l in lines ])
             pt = self.axes.plot ( f_lo, [x]*len(f_lo), '.', color=self.color,
-                    markersize=1 ) + \
+                    markersize=self.lw ) + \
                 self.axes.plot ( f_hi, [x]*len(f_hi), '.', color=self.color,
-                    markersize=1 )
+                    markersize=self.lw )
             dummy = self.axes.plot ( [p[0],p[-1]],[x-ex,x+ex], '.', markersize=0 )
         else:
             pt = self.axes.plot ( [x]*len(f_lo), f_lo, '.', color=self.color,
@@ -280,7 +284,7 @@ class BoxplotArtist ( Artist ):
             dummy = self.axes.plot ( [x-ex,x+ex], [p[0],p[-1]], '.', markersize=0 )
         box = LineCollection (
                 segments=lines,
-                linewidths=[1]*lines.shape[0],
+                linewidths=[self.lw]*lines.shape[0],
                 colors=[self.color]*lines.shape[0] )
         box.set_transform ( self.axes.transData )
         box.set_zorder(10)
