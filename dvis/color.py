@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import matplotlib.colors
-import numpy as np
+import pylab as pl
 
 __all__ = ["cmix","col3","col4","luminancecode"]
 
@@ -54,7 +54,7 @@ def luminancecode ( x, basecolor, **kwargs ):
     vmax = float(kwargs.setdefault ( 'vmax', max(x) ))
     mincol = float(kwargs.setdefault('mincol', 0.1 ))
 
-    ratios = np.clip(((vmax-x)/(vmax-vmin)),0,1e8)/mincol
+    ratios = pl.clip(((vmax-x)/(vmax-vmin)),0,1e8)/mincol
 
     return [cmix('w',basecolor,r) for r in ratios]
 
