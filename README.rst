@@ -98,7 +98,7 @@ that in matplotlib, namely spines (for 1) and axes_grids (for 2).
 Unfortunately, both are hidden fairly deep in the matplotlib code and need to
 be tweaked manually. There are two functions that do the manual tweaking as
 automatical as possible. Yet, in order to use them, you should probably know a
-bit about how things would be done in matplotlib
+bit about how things would be done in matplotlib::
 
     >>> dvis.prepare_axes ( pl.axes() ) # doctest: +ELLIPSIS
     <matplotlib.axes.AxesSubplot object at ...>
