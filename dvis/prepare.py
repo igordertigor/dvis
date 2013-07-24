@@ -83,13 +83,15 @@ def axes_grid ( naxes, **kwargs ):
             plot with Fixed(hdist) fields in between)
         *hdist*
             pad horizontally between actual plot boxes with fields of
-            fixed size hdist (Default: 0.2)
+            fixed size hdist (Default: 0.2). If hdist is a sequence, the fields
+            have sizes taken (cyclically) from that list.
         *vert*
             vertical cell sizes (Default: One Scaled(1.) field for each
             plot with Fixed(vdist) fields in between)
         *vdist*
             pad vertically between actual plot boxes with fields of fixed
-            size vdist (Default: 0.2)
+            size vdist (Default: 0.2). If vdist is a sequence, the fields have
+            sizes taken (cyclically) from that list.
         *nx*
             array with shape naxes that gives the nx arguments for
             divide.new_locator
@@ -117,15 +119,19 @@ def axes_grid ( naxes, **kwargs ):
     hdist = kwargs.setdefault ( 'hdist', 0.2 )
     vdist = kwargs.setdefault ( 'vdist', 0.2 )
 
-    if hdist>0:
+    if getattr(hdist,'__iter__',False) or hdist>0:
+        if not getattr(hdist,'__iter__',False):
+            hdist = [hdist]
         for i in xrange ( naxes[0]-1 ):
-            horz.insert ( 2*i+1, Size.Fixed(hdist) )
+            horz.insert ( 2*i+1, Size.Fixed(hdist[i%len(hdist)]) )
         hslice = slice ( 0, len(horz), 2 )
     else:
         hslice = slice ( 0, len(horz) )
-    if vdist>0:
+    if getattr(vdist,'__iter__',False) or vdist>0:
+        if not getattr(vdist,'__iter__',False):
+            vdist = [vdist]
         for i in xrange ( naxes[1]-1 ):
-            vert.insert ( 2*i+1, Size.Fixed(vdist) )
+            vert.insert ( 2*i+1, Size.Fixed(vdist[i%len(vdist)]) )
         vslice = slice ( 0, len(vert), 2 )
     else:
         vslice = slice ( 0, len(vert) )
