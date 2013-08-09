@@ -169,6 +169,48 @@ def Errorline ( x, y, e=None, se=None, ax=None, **kwargs ):
     f = ax.fill ( pl.concatenate ( (x,x[::-1]) ), ye, **kwargs )
     return l,f
 
+def Errorline_faded ( x, y, e, al, **kwargs ):
+    """An Errorline that fades
+
+    Similar to an Error line but fades out according to al.
+    IMPORTANT: This line is going to be made up of lots of small lines and
+    small rectangular patches.
+
+    :Parameters:
+        *x*
+            x values of the line
+        *y*
+            y values of the line. If y.shape == 2, then se is called for
+            every sample of y to derive an upper and lower limit
+        *e*
+            error (in y direction) This could take either a scalar giving the
+            (constant) error, an array of scalar errors, or an array of
+            observations. In the latter case, se is applied to every sample
+            of e
+        *al*
+            alpha values for the different line segments
+        *color*,*edgecolor*,*facecolor*,*ax*
+            see Errorline()
+    """
+    c = dvis.color.colorsequence ( kwargs.setdefault ( 'color', [0,0,0]))[0]
+    kwargs.setdefault ( 'edgecolor', dvis.color.cmix ( c, 'w', 3 ) )
+    kwargs.setdefault ( 'facecolor', dvis.color.cmix ( c, 'w', 1.5 ) )
+    ax = kwargs.setdefault ( 'ax', pl.gca() )
+
+    fade = pl.convolve ( [.5,.5], al, 'valid' )
+    yup = y+e
+    ydown = y-e
+    n = len(fade)
+    l,f = [],[]
+    for i in xrange ( n ):
+        f += ax.fill (
+                pl.concatenate((x[i:i+2],x[i+1:i-1:-1])),
+                pl.concatenate((yup[i:i+2],ydown[i+1:i-1:-1])),
+                ec='none', fc=kwargs['facecolor'], alpha=fade[i] )
+        l += ax.plot ( x[i:i+2], y[i:i+2], color=c, alpha=fade[i] )
+
+    return l,f
+
 #################################################################
 
 def calculate_boxplot_stats ( x, **kwargs ):
