@@ -204,8 +204,8 @@ def Errorline_faded ( x, y, e, al, **kwargs ):
     l,f = [],[]
     for i in xrange ( n ):
         f += ax.fill (
-                pl.concatenate((x[i:i+2],x[i+1:i-1:-1])),
-                pl.concatenate((yup[i:i+2],ydown[i+1:i-1:-1])),
+                [x[i],x[i+1],x[i+1],x[i]],
+                [yup[i],yup[i+1],ydown[i+1],ydown[i]],
                 ec='none', fc=kwargs['facecolor'], alpha=fade[i] )
         l += ax.plot ( x[i:i+2], y[i:i+2], color=c, alpha=fade[i] )
 
